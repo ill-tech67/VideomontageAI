@@ -1,0 +1,14 @@
+aiogram==3.31.0
+openai==3.35.1
+anthropic==1.16.0
+google-genai==2.31.0
+elevenlabs==2.74.1
+mcp==2.3.0
+SQLAlchemy[asyncio]==2.1.5
+aiosqlite==0.22.1
+greenlet>=3.0
+pydantic-settings==2.16.1
+cryptography==50.0.2
+Pillow==13.0.0
+httpx>=0.28
+python-dotenv>=1.0

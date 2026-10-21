@@ -1,0 +1,41 @@
+[project]
+name = "videotg"
+version = "0.1.0"
+description = "Telegram-бот для AI-монтажа видео по текстовому описанию"
+requires-python = ">=3.11"
+readme = "README.md"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "C4", "SIM"]
+ignore = ["E501", "B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/handlers/*" = ["B008"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
+
+# aiogram типизирует Message.bot / CallbackQuery.message как Optional,
+# поэтому в хендлерах неизбежен шум union-attr/arg-type.
+[[tool.mypy.overrides]]
+module = ["app.handlers.*", "app.middlewares"]
+disable_error_code = ["union-attr", "arg-type", "assignment", "index", "call-overload"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
