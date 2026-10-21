@@ -73,12 +73,10 @@ python -c "import secrets; print(secrets.token_urlsafe(48))"
 python -m app
 ```
 
-### Docker
+### Railway
 
-```bash
-docker compose up -d --build
-docker compose logs -f bot
-```
+Сборка без Dockerfile (Railpack, см. `railpack.json`: Python, Node 22, ffmpeg, библиотеки Chrome).
+Подключите Railway Volume с mount path `/app/data` — там лежат SQLite, проекты, рендеры и кэш npm/Chrome.
 
 ---
 
