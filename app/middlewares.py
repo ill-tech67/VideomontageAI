@@ -130,3 +130,38 @@ class AccessMiddleware(BaseMiddleware):
                 "Нужно принять согласие на передачу данных ИИ-провайдерам.",
                 show_alert=True,
             )
+
+
+class PhotoMenuMiddleware(BaseMiddleware):
+    """Подменяет сообщение-баннер (фото) текстовым перед открытием подменю.
+
+    Главное меню — это фото с подписью, а подменю рисуют через edit_text, который
+    для фото падает: «there is no text in the message to edit». Поэтому при нажатии
+    кнопки меню на баннере отправляем текстовое сообщение, удаляем баннер и
+    отдаём хендлеру уже текстовое. Кнопка «в главное меню» сама вернёт баннер.
+    """
+
+    async def __call__(
+        self,
+        handler: Handler,
+        event: TelegramObject,
+        data: dict[str, object],
+    ) -> object:
+        callback = event.callback_query if isinstance(event, Update) else None
+        message = callback.message if callback is not None else None
+        if (
+            callback is not None
+            and isinstance(message, Message)
+            and message.photo
+            and (callback.data or "").startswith("menu:")
+            and callback.data != "menu:home"
+        ):
+            try:
+                text_message = await message.answer("⏳")
+                await message.delete()
+            except Exception:  # noqa: BLE001
+                logger.debug("Не удалось заменить баннер", exc_info=True)
+            else:
+                # Объекты aiogram неизменяемы, поэтому обходим frozen-модель.
+                object.__setattr__(callback, "message", text_message)
+        return await handler(event, data)

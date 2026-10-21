@@ -24,7 +24,7 @@ from app.handlers import (
     projects_menu,
     start,
 )
-from app.middlewares import AccessMiddleware, UserMiddleware
+from app.middlewares import AccessMiddleware, PhotoMenuMiddleware, UserMiddleware
 from app.ui import texts
 from app.ui.theme import Style
 
@@ -73,6 +73,7 @@ def build_dispatcher() -> Dispatcher:
     # загружен до проверки доступа.
     dispatcher.update.outer_middleware(UserMiddleware())
     dispatcher.update.outer_middleware(AccessMiddleware())
+    dispatcher.update.outer_middleware(PhotoMenuMiddleware())
 
     dispatcher.include_router(clone_router(start.router))
     dispatcher.include_router(clone_router(main_menu.router))
